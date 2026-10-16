@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GPT-6 Intelligent UI｜互動式摘要</title>
+<style>
+:root{
+  --bg:#f7f3ef;
+  --card:#fffdfb;
+  --rose:#b9787f;
+  --rose2:#d6a3a7;
+  --sage:#879a87;
+  --sage2:#b8c4b6;
+  --taupe:#8e8178;
+  --ink:#3d3632;
+  --muted:#756b65;
+  --line:#e6ddd7;
+  --lav:#a99aaa;
+  --bluegray:#8e9ba8;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  background:linear-gradient(180deg,#faf7f4 0%,#f4efeb 100%);
+  color:var(--ink);
+}
+.wrap{max-width:1080px;margin:0 auto;padding:34px 20px 60px}
+.hero{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:34px;
+  box-shadow:0 12px 40px rgba(95,79,68,.08);
+}
+.eyebrow{color:var(--rose);font-weight:700;letter-spacing:.08em;font-size:13px}
+h1{font-size:42px;line-height:1.15;margin:8px 0 12px}
+.sub{font-size:18px;color:var(--muted);line-height:1.7}
+.tabs{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+button.tab{
+  border:1px solid var(--line); background:#fff; color:var(--ink);
+  padding:12px 16px;border-radius:999px;cursor:pointer;font-size:15px;
+}
+button.tab.active{background:var(--rose);color:#fff;border-color:var(--rose)}
+.panel{display:none;margin-top:22px}
+.panel.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:20px;
+  padding:18px;min-height:150px;
+}
+.icon{font-size:26px}
+.card h3{margin:10px 0 8px;font-size:18px}
+.card p{margin:0;color:var(--muted);line-height:1.65;font-size:14px}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.col{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.head{padding:13px 16px;font-weight:800}
+.old .head{background:#d8d3cf}
+.new .head{background:#c88c92;color:#fff}
+.row{padding:14px 16px;border-top:1px solid var(--line);line-height:1.55}
+.usecases{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.uc{padding:18px;border-radius:18px;border:1px solid var(--line);cursor:pointer;transition:.2s}
+.uc:hover{transform:translateY(-2px)}
+.uc.work{background:#eef1f3}.uc.learn{background:#eef3eb}.uc.life{background:#f7ece8}.uc.decide{background:#f0ebf2}
+.detail{
+  margin-top:14px;background:var(--card);border:1px solid var(--line);
+  border-radius:18px;padding:18px;min-height:120px
+}
+.flow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.step{flex:1;min-width:180px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;text-align:center}
+.arrow{font-size:25px;color:var(--rose)}
+.sliderbox{margin-top:20px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px}
+input[type=range]{width:100%;accent-color:var(--rose)}
+.level{font-size:15px;color:var(--muted);margin-bottom:10px}
+.summarybox{margin-top:14px;padding:18px;border-radius:16px;background:#fff7f5;border:1px solid #ead4d1;line-height:1.75}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.badge{background:#f1ebe7;border:1px solid var(--line);padding:7px 10px;border-radius:999px;font-size:13px}
+@media(max-width:800px){
+  .grid,.usecases{grid-template-columns:1fr 1fr}
+  .compare{grid-template-columns:1fr}
+  h1{font-size:32px}
+}
+@media(max-width:520px){
+  .grid,.usecases{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">GPT-6 · INTELLIGENT UI</div>
+    <h1>互動式摘要：智慧介面是什麼？</h1>
+    <div class="sub">GPT 不只回答內容，還會依問題自動選擇更適合的呈現方式，像卡片、比較表、流程圖、按鈕與可調整的小工具。</div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="quick">30 秒看懂</button>
+      <button class="tab" data-tab="compare">跟以前差在哪</button>
+      <button class="tab" data-tab="use">實際能做什麼</button>
+      <button class="tab" data-tab="full">完整結構</button>
+    </div>
+
+    <div id="quick" class="panel active">
+      <div class="grid">
+        <div class="card"><div class="icon">🧩</div><h3>結構化</h3><p>把長內容拆成易讀區塊，不必自己再整理一次。</p></div>
+        <div class="card"><div class="icon">👆</div><h3>可互動</h3><p>可以點、切換、展開、調整，不只停在閱讀。</p></div>
+        <div class="card"><div class="icon">🎯</div><h3>依情境呈現</h3><p>比較題就做比較，流程題就做流程，試算題就變成工具。</p></div>
+        <div class="card"><div class="icon">🌿</div><h3>不硬塞 UI</h3><p>如果一句文字最好懂，就維持一句文字。</p></div>
+      </div>
+      <div class="flow" style="margin-top:18px">
+        <div class="step">你提問</div><div class="arrow">→</div>
+        <div class="step">GPT 判斷最適合形式</div><div class="arrow">→</div>
+        <div class="step">文字／圖表／卡片／互動介面</div>
+      </div>
+    </div>
+
+    <div id="compare" class="panel">
+      <div class="compare">
+        <div class="col old">
+          <div class="head">以前</div>
+          <div class="row">📄 以長篇文字為主</div>
+          <div class="row">🧠 你自己抓重點、重新整理</div>
+          <div class="row">📊 需要另外開 Excel、表格或其他工具</div>
+        </div>
+        <div class="col new">
+          <div class="head">現在（Intelligent UI）</div>
+          <div class="row">🗂️ 可直接看到卡片、圖表、流程</div>
+          <div class="row">👆 能點選、切換、展開與調整</div>
+          <div class="row">🪄 回答本身就能長成一個迷你工具</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="use" class="panel">
+      <div class="usecases">
+        <div class="uc work" data-case="work"><b>💼 工作</b><br><small>會議、規格、專案</small></div>
+        <div class="uc learn" data-case="learn"><b>📚 學習</b><br><small>語言、概念、測驗</small></div>
+        <div class="uc life" data-case="life"><b>🏠 生活</b><br><small>旅遊、預算、分帳</small></div>
+        <div class="uc decide" data-case="decide"><b>💡 決策</b><br><small>比較、條件、排序</small></div>
+      </div>
+      <div id="caseDetail" class="detail">
+        點上面的情境卡片看看。
+      </div>
+    </div>
+
+    <div id="full" class="panel">
+      <div class="grid">
+        <div class="card"><h3>一句話摘要</h3><p>先給核心結論，不讓資訊量一開始就撲臉。</p></div>
+        <div class="card"><h3>重點卡片</h3><p>把核心概念拆成可掃視的小單位。</p></div>
+        <div class="card"><h3>比較與流程</h3><p>需要理解差異或因果時，直接換成視覺結構。</p></div>
+        <div class="card"><h3>互動探索</h3><p>讓使用者自己選情境、深度與閱讀路徑。</p></div>
+      </div>
+    </div>
+
+    <div class="sliderbox">
+      <div class="level">摘要深度：<b id="levelLabel">一般版</b></div>
+      <input id="depth" type="range" min="0" max="2" step="1" value="1" />
+      <div id="depthText" class="summarybox">
+        GPT-6 Intelligent UI 的重點，是讓回答從「純文字輸出」進化成「依問題自動選擇最適合的介面」。它特別適合摘要、比較、流程說明、試算與練習型任務。
+      </div>
+      <div class="badges">
+        <span class="badge">summary</span><span class="badge">比較</span><span class="badge">流程</span><span class="badge">練習</span><span class="badge">試算</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+
+const details = {
+  work:'<b>💼 工作</b><br>把會議整理成「決議 / 待辦 / 各方立場」切換卡；把規格表轉成可篩選比較；把專案內容做成流程。',
+  learn:'<b>📚 學習</b><br>把內容拆成重點、概念比較與小測驗；語言練習可直接做成選擇題或情境題。',
+  life:'<b>🏠 生活</b><br>把旅遊規劃、分帳、預算試算做成滑桿與選項，調整條件後立即更新結果。',
+  decide:'<b>💡 決策</b><br>把候選方案依條件篩選，顯示優先級、利弊與推薦原因，少一點腦內 Excel。'
+};
+document.querySelectorAll('.uc').forEach(el=>{
+  el.addEventListener('click',()=>{document.getElementById('caseDetail').innerHTML = details[el.dataset.case]})
+});
+
+const depth = document.getElementById('depth');
+const label = document.getElementById('levelLabel');
+const text = document.getElementById('depthText');
+const labels = ['超短版','一般版','深入版'];
+const texts = [
+  'GPT-6 Intelligent UI = 把回答做成更直觀、可互動的形式。',
+  'GPT-6 Intelligent UI 的重點，是讓回答從「純文字輸出」進化成「依問題自動選擇最適合的介面」。它特別適合摘要、比較、流程說明、試算與練習型任務。',
+  'GPT-6 Intelligent UI 不只是把內容排漂亮，而是先理解問題屬性，再決定要用文字、卡片、比較表、流程圖、按鈕、滑桿或其他互動元件來呈現。它讓使用者能依情境與閱讀深度探索同一份內容，降低重新整理資訊的負擔。'
+];
+depth.addEventListener('input',()=>{
+  label.textContent = labels[depth.value];
+  text.textContent = texts[depth.value];
+});
+</script>
+</body>
+</html>
